@@ -1,0 +1,165 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="ojmakhura" id="access_point_views">
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Access Point Type Edit"/>
+            <column name="URL" value="/access/type/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Access Point Type Search"/>
+            <column name="URL" value="/access/type/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <!-- Access Point -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="name" value="Access Point Edit"/>
+            <column name="URL" value="/access/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Access Point Search"/>
+            <column name="URL" value="/access/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <!-- Authorisation -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="name" value="Authorisation Edit"/>
+            <column name="URL" value="/authorisation/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="name" value="Authorisation Search"/>
+            <column name="URL" value="/authorisation/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+
+        <!-- Organisation -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Organisation Edit"/>
+            <column name="URL" value="/organisation/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Organisation Search"/>
+            <column name="URL" value="/organisation/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Organisation Details"/>
+            <column name="URL" value="/organisation/details"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+
+        <!-- Department -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Department Edit"/>
+            <column name="URL" value="/organisation/department/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Department Search"/>
+            <column name="URL" value="/organisation/department/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Department Details"/>
+            <column name="URL" value="/organisation/department/details"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+
+        <!-- User -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="User Edit"/>
+            <column name="URL" value="/user/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="User Search"/>
+            <column name="URL" value="/user/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+
+        <!-- Document -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Document Edit"/>
+            <column name="URL" value="/document/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Document Search"/>
+            <column name="URL" value="/user/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+
+        <!-- Metadata -->
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Metadata Edit"/>
+            <column name="URL" value="/document/metadata/edit"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Metadata Search"/>
+            <column name="URL" value="/document/metadata/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='VIEW')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

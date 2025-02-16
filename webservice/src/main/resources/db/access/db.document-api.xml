@@ -1,0 +1,80 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="ojmakhura" id="document_api">
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi findById"/>
+            <column name="URL" value="GET /document/{id}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi save"/>
+            <column name="URL" value="POST /document"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi remove"/>
+            <column name="URL" value="DELETE /document/{id}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi getAll"/>
+            <column name="URL" value="GET /document/all"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi search"/>
+            <column name="URL" value="POST /document/search"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi getAllPaged"/>
+            <column name="URL" value="POST /document/page/{pageNumber}/size/{pageSize}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi pagedSearch"/>
+            <column name="URL" value="POST /document/search/paged"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi upload"/>
+            <column name="URL" value="POST /document/upload"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="DocumentApi download"/>
+            <column name="URL" value="GET /document/download"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='API')"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

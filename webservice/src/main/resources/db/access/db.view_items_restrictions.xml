@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="ojmakhura" id="access_point">
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="AccessPointType delete button"/>
+            <column name="URL" value="/access/type/edit{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="AccessPoint delete button"/>
+            <column name="URL" value="/access/edit{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Authorisation delete button"/>
+            <column name="URL" value="/authorisation/search{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Organisation delete button"/>
+            <column name="URL" value="/organisation/edit{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Department delete button"/>
+            <column name="URL" value="/organisation/department/edit{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Metadata delete button"/>
+            <column name="URL" value="/document/metadata/edit{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+        <insert tableName="ACCESS_POINT">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="liquibase"/>
+            <column name="NAME" value="Document delete button"/>
+            <column name="URL" value="/document/edit{button:delete}"/>
+            <column name="ACCESS_POINT_TYPE_FK" valueComputed="(SELECT id from ACCESS_POINT_TYPE WHERE code='BUTTON')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

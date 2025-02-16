@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="ojmakhura" id="access_point_type">
+        <insert tableName="ACCESS_POINT_TYPE">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="system"/>
+            <column name="code" value="MENU"/>
+            <column name="name" value="Menu"/>
+            <!-- <column name="description">This access point type is meant for menus./> -->
+        </insert>
+        <insert tableName="ACCESS_POINT_TYPE">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="system"/>
+            <column name="code" value="API"/>
+            <column name="name" value="API Endpoint"/>
+            <!-- <column name="description">This access point type is meant for API endpoints./> -->
+        </insert>
+        <insert tableName="ACCESS_POINT_TYPE">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="system"/>
+            <column name="code" value="VIEW"/>
+            <column name="name" value="View"/>
+            <!-- <column name="description">This access point type is meant for views./> -->
+        </insert>
+        <insert tableName="ACCESS_POINT_TYPE">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="system"/>
+            <column name="code" value="BUTTON"/>
+            <column name="name" value="Button"/>
+            <!-- <column name="description">This access point type is meant for buttons is a view./> -->
+        </insert>
+        <insert tableName="ACCESS_POINT_TYPE">
+            <column name="ID" valueComputed="(select gen_random_uuid())"/>
+            <column name="CREATED_AT" value="NOW()"/>
+            <column name="CREATED_BY" value="system"/>
+            <column name="code" value="VIEW_ITEM"/>
+            <column name="name" value="View Item"/>
+            <!-- <column name="description">This access point type is meant for any view items./> -->
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

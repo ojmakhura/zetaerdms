@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="
+                        http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <!-- MASTER -->
+
+    <!-- MASTER -->
+    <include file="access/db.access-type.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.access-point-menus.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.access-point-views.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.access-point-type-api.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.authorisation-api.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.organisation-api.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.department-api.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.user-api.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.document-metadata-api.xml" relativeToChangelogFile="true"/>
+    <include file="access/db.document-api.xml" relativeToChangelogFile="true"/>
+
+    <!-- District initialisation -->
+    <include file="authorisation/db.authorisation.xml" relativeToChangelogFile="true"/>
+
+    <include file="access/db.view_items_restrictions.xml" relativeToChangelogFile="true"/>
+    <include file="authorisation/db.create_delete_buttons.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
