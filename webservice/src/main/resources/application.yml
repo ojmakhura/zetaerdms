@@ -11,6 +11,13 @@ server:
   servlet:
     context-path: /
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: -1 # No file size limit
+      max-request-size: -1  # No limit on request size
+      location: ${java.io.tmpdir}
+      file-size-threshold: 50MB
   thymeleaf:
     cache: false
   mvc:

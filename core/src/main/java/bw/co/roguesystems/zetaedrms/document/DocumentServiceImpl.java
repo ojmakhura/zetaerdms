@@ -126,7 +126,7 @@ public class DocumentServiceImpl
      * @see bw.co.roguesystems.zetaedrms.document.DocumentService#upload(File)
      */
     @Override
-    protected DocumentDTO handleUpload(File file)
+    protected Collection<DocumentDTO> handleUpload(Set<File> file)
         throws Exception
     {
         // TODO implement protected  DocumentDTO handleUpload(File file)

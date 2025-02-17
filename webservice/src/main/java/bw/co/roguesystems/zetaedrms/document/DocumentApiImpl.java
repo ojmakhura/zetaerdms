@@ -8,12 +8,17 @@ package bw.co.roguesystems.zetaedrms.document;
 import bw.co.roguesystems.zetaedrms.SearchObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/document")
@@ -183,8 +188,39 @@ public class DocumentApiImpl extends DocumentApiBase {
     }
 
     @Override
-    public ResponseEntity<?> handleUpload(File file) {
+    public ResponseEntity<?> handleUpload(Set<MultipartFile> files) {
         try {
+            // System.out.println("=====================================================");
+            // System.out.println("Name: " + file.getName());
+            // System.out.println("Path: " + file.getPath());
+            // System.out.println("Absolute Path: " + file.getAbsolutePath());
+            // System.out.println("Canonical Path: " + file.getCanonicalPath());
+            // System.out.println("=====================================================");
+            Optional<?> data = Optional.empty(); // TODO: Add custom code here;
+            ResponseEntity<?> response;
+
+            if(data.isPresent()) {
+                response = ResponseEntity.status(HttpStatus.OK).body(data.get());
+            } else {
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return response;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> handleUploadOne(MultipartFile file) {
+        try {
+            System.out.println("=====================================================");
+            System.out.println("Name: " + file.getName());
+            System.out.println("Path: " + file.getOriginalFilename());
+            // System.out.println("Absolute Path: " + file.getInputStream().);
+            // System.out.println("Canonical Path: " + file.getCanonicalPath());
+            System.out.println("=====================================================");
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 

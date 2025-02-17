@@ -10,7 +10,7 @@ import { SearchObject } from '@app/model/search-object';
   providedIn: 'root'
 })
 export class DocumentApi {
-    
+
     protected path = '/document';
 
     private http = inject(HttpClient);
@@ -30,14 +30,14 @@ export class DocumentApi {
         return this.http.get<DocumentDTO[] | any[]>(this.path + `/all`);
     }
 
-    public getAllPaged(pageNumber: number | any , pageSize: number | any ): Observable<DocumentDTO | any> {
+    public getAllPaged(pageNumber: number | any , pageSize: number | any ): Observable<Page<DocumentDTO>> {
 
-        return this.http.get<DocumentDTO | any>(this.path + `/all/paged?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+        return this.http.get<Page<DocumentDTO>>(this.path + `/all/paged?pageNumber=${pageNumber}&pageSize=${pageSize}`);
     }
 
-    public pagedSearch(criteria: SearchObject<string> | any ): Observable<DocumentDTO | any> {
+    public pagedSearch(criteria: SearchObject<string> | any ): Observable<Page<DocumentDTO>> {
 
-        return this.http.post<DocumentDTO | any>(this.path + `/search/paged`, criteria);
+        return this.http.post<Page<DocumentDTO>>(this.path + `/search/paged`, criteria);
     }
 
     public remove(id: string | any ): Observable<boolean | any> {
@@ -55,9 +55,20 @@ export class DocumentApi {
         return this.http.get<DocumentDTO[] | any[]>(this.path + `/search?criteria=${criteria}`);
     }
 
-    public upload(file: File | any ): Observable<DocumentDTO | any> {
+    public upload(files: File[] ): Observable<DocumentDTO[]> {
 
-        return this.http.post<DocumentDTO | any>(this.path + `/upload`, file);
+      const formData = new FormData();
+      files.forEach(file => formData.append('files', file));
+      console.log(formData);
+
+      return this.http.post<DocumentDTO[]>(this.path + `/upload`, formData);
     }
 
+    public uploadOne(file: File): Observable<DocumentDTO> {
+
+      const formData = new FormData();
+      formData.append('file', file)
+
+      return this.http.post<DocumentDTO>(this.path + `/upload/one`, formData);
+    }
 }

@@ -10,7 +10,9 @@ import { Page } from '@app/model/page.model';
 import { DocumentDTO } from '@app/model/bw/co/roguesystems/zetaedrms/document/document-dto';
 import { DocumentApi } from '@app/service/bw/co/roguesystems/zetaedrms/document/document-api';
 
-export type DocumentApiState = AppState<any, any> & {};
+export type DocumentApiState = AppState<any, any> & {
+  uploaded: DocumentDTO[];
+};
 
 const initialState: DocumentApiState = {
   data: null,
@@ -21,7 +23,8 @@ const initialState: DocumentApiState = {
   loading: false,
   success: false,
   messages: [],
-  loaderMessage: ''
+  loaderMessage: '',
+  uploaded: [],
 };
 
 export const DocumentApiStore = signalStore(
@@ -33,62 +36,62 @@ export const DocumentApiStore = signalStore(
       reset: () => {
         patchState(store, initialState);
       },
-      download: rxMethod<{filePath: string | any }>(
+      download: rxMethod<{ filePath: string | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.download(data.filePath, ).pipe(
+          return documentApi.download(data.filePath,).pipe(
             tapResponse({
               next: (data: File | any) => {
                 //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
+                //store,
+                // {
+                //    data,
+                //    loading: false,
+                //    error: false,
+                //    success: true,
+                //    messages: []
+                //}
                 //);
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      findById: rxMethod<{id: string | any }>(
+      findById: rxMethod<{ id: string | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.findById(data.id, ).pipe(
+          return documentApi.findById(data.id,).pipe(
             tapResponse({
               next: (data: DocumentDTO | any) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+                patchState(
+                  store,
+                  {
+                    data,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Found document information.`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
@@ -100,212 +103,242 @@ export const DocumentApiStore = signalStore(
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
           return documentApi.getAll().pipe(
             tapResponse({
-              next: (data: DocumentDTO[] | any[]) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+              next: (dataList: DocumentDTO[] | any[]) => {
+                patchState(
+                  store,
+                  {
+                    dataList,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: []
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      getAllPaged: rxMethod<{pageNumber: number | any , pageSize: number | any }>(
+      getAllPaged: rxMethod<{ pageNumber: number | any, pageSize: number | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.getAllPaged(data.pageNumber, data.pageSize, ).pipe(
+          return documentApi.getAllPaged(data.pageNumber, data.pageSize,).pipe(
             tapResponse({
-              next: (data: DocumentDTO | any) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+              next: (dataPage: Page<DocumentDTO>) => {
+                patchState(
+                  store,
+                  {
+                    dataPage,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Found ${dataPage.totalElements} items`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      pagedSearch: rxMethod<{criteria: SearchObject<string> | any }>(
+      pagedSearch: rxMethod<{ criteria: SearchObject<string> | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.pagedSearch(data.criteria, ).pipe(
+          return documentApi.pagedSearch(data.criteria,).pipe(
             tapResponse({
-              next: (data: DocumentDTO | any) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+              next: (dataPage: Page<DocumentDTO>) => {
+                patchState(
+                  store,
+                  {
+                    dataPage,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Found ${dataPage.totalElements} items`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      remove: rxMethod<{id: string | any }>(
+      remove: rxMethod<{ id: string | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.remove(data.id, ).pipe(
+          return documentApi.remove(data.id,).pipe(
             tapResponse({
               next: (data: boolean | any) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+                patchState(
+                  store,
+                  {
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Removed document information.`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      save: rxMethod<{accessPointType: DocumentDTO | any }>(
+      save: rxMethod<{ accessPointType: DocumentDTO | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.save(data.accessPointType, ).pipe(
+          return documentApi.save(data.accessPointType,).pipe(
             tapResponse({
               next: (data: DocumentDTO | any) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+                patchState(
+                  store,
+                  {
+                    data,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Saved document information.`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      search: rxMethod<{criteria: string | any }>(
+      search: rxMethod<{ criteria: string | any }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.search(data.criteria, ).pipe(
+          return documentApi.search(data.criteria,).pipe(
             tapResponse({
-              next: (data: DocumentDTO[] | any[]) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+              next: (dataList: DocumentDTO[] | any[]) => {
+                patchState(
+                  store,
+                  {
+                    dataList,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Found ${dataList.length} items`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
-                  }
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
           );
         }),
       ),
-      upload: rxMethod<{file: File | any }>(
+      upload: rxMethod<{ files: File[] }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.upload(data.file, ).pipe(
+          return documentApi.upload(data.files,).pipe(
             tapResponse({
-              next: (data: DocumentDTO | any) => {
-                //patchState(
-                  //store, 
-                  // { 
-                  //    data, 
-                  //    loading: false, 
-                  //    error: false,
-                  //    success: true, 
-                  //    messages: [] 
-                  //}
-                //);
+              next: (uploaded: DocumentDTO[]) => {
+                patchState(
+                  store,
+                  {
+                    uploaded,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`Uploaded ${uploaded.length} files`]
+                  }
+                );
               },
               error: (error: any) => {
                 patchState(
-                  store, { 
-                    error, 
-                    loading: false, 
-                    success: false,
-                    messages: [error?.error ? error.error : error] 
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
+                );
+              },
+            }),
+          );
+        }),
+      ),
+      uploadOne: rxMethod<{ file: File }>(
+        switchMap((data: any) => {
+          patchState(store, { loading: true, loaderMessage: 'Loading ...' });
+          return documentApi.upload(data.files,).pipe(
+            tapResponse({
+              next: (data: DocumentDTO) => {
+                patchState(
+                  store,
+                  {
+                    data,
+                    loading: false,
+                    error: false,
+                    success: true,
+                    messages: [`File uploaded`]
                   }
+                );
+              },
+              error: (error: any) => {
+                patchState(
+                  store, {
+                  error,
+                  loading: false,
+                  success: false,
+                  messages: [error?.error ? error.error : error]
+                }
                 );
               },
             }),
