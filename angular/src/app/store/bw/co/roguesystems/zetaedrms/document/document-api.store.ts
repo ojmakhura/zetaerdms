@@ -317,7 +317,7 @@ export const DocumentApiStore = signalStore(
       uploadOne: rxMethod<{ file: File }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.upload(data.files,).pipe(
+          return documentApi.uploadOne(data.file,).pipe(
             tapResponse({
               next: (data: DocumentDTO) => {
                 patchState(

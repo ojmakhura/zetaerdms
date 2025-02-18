@@ -7,7 +7,7 @@ logging:
         co:
           roguesystems: DEBUG
 server:
-  port: 8085
+  port: ${PORT:8085}
   servlet:
     context-path: /
 spring:
@@ -70,3 +70,8 @@ management:
       version: ${spring.application.version}
 rate-limiting:
   tokens: ${RATE_LIMIT:2000}
+minio:
+    url: ${MINIO_URL:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:minio}
+    secret-key: ${MINIO_SECRET_KEY:minio123}
+    bucket-name: ${MINIO_BUCKET:zetaerdms}

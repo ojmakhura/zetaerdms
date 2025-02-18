@@ -4,25 +4,22 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
 import { SharedModule } from '@app/@shared/shared.module';
-import { LoaderComponent } from '@app/@shared';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ProgressComponent } from "../components/progress/progress.component";
+import { DocumentApiStore } from '@app/store/bw/co/roguesystems/zetaedrms/document/document-api.store';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [CommonModule, TranslateModule, SharedModule, MaterialModule, ProgressComponent],
+  imports: [CommonModule, TranslateModule, SharedModule, MaterialModule],
 })
 export class HomeComponent implements OnInit {
-
   files: any[] = [];
+  documentApiStore = inject(DocumentApiStore);
 
   constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   /**
    * on file drop handler
@@ -35,7 +32,7 @@ export class HomeComponent implements OnInit {
    * handle file from browsing
    */
   fileBrowseHandler($event: any) {
-    console.log($event)
+    console.log($event);
     this.prepareFilesList($event.target.files);
   }
 
@@ -73,7 +70,7 @@ export class HomeComponent implements OnInit {
    */
   prepareFilesList(files: Array<any>) {
     for (const item of files) {
-      console.log(item)
+      console.log(item);
       item.progress = 0;
       this.files.push(item);
     }
@@ -97,6 +94,8 @@ export class HomeComponent implements OnInit {
   }
 
   uploadFiles() {
-    console.log(this.files)
+    console.log(this.files);
+    // this.documentApiStore.upload({files: this.files});
+    // this.documentApiStore.uploadOne({file: this.files[0]});
   }
 }

@@ -10,34 +10,49 @@ package bw.co.roguesystems.zetaedrms.document;
 
 import bw.co.roguesystems.zetaedrms.PropertySearchOrder;
 import bw.co.roguesystems.zetaedrms.SearchObject;
+import bw.co.roguesystems.zetaedrms.minio.MinioService;
+import io.minio.PutObjectArgs;
+import io.minio.Result;
+import io.minio.messages.Item;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @see bw.co.roguesystems.zetaedrms.document.DocumentService
  */
 @Service("documentService")
-@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 public class DocumentServiceImpl
-    extends DocumentServiceBase
-{
+        extends DocumentServiceBase {
+
+    private final MinioService minioService;
+
     public DocumentServiceImpl(
-        DocumentDao documentDao,
-        DocumentRepository documentRepository,
-        MessageSource messageSource
-    ) {
-        
+            DocumentDao documentDao,
+            DocumentRepository documentRepository,
+            MinioService minioService,
+            MessageSource messageSource) {
+
         super(
-            documentDao,
-            documentRepository,
-            messageSource
-        );
+                documentDao,
+                documentRepository,
+                messageSource);
+
+        this.minioService = minioService;
     }
 
     /**
@@ -45,8 +60,7 @@ public class DocumentServiceImpl
      */
     @Override
     protected DocumentDTO handleFindById(String id)
-        throws Exception
-    {
+            throws Exception {
         Document doc = documentRepository.findById(id).get();
 
         return documentDao.toDocumentDTO(doc);
@@ -57,8 +71,7 @@ public class DocumentServiceImpl
      */
     @Override
     protected DocumentDTO handleSave(DocumentDTO document)
-        throws Exception
-    {
+            throws Exception {
 
         Document doc = documentDao.documentDTOToEntity(document);
 
@@ -72,10 +85,11 @@ public class DocumentServiceImpl
      */
     @Override
     protected boolean handleRemove(String id)
-        throws Exception
-    {
-        // TODO implement protected  boolean handleRemove(String id)
-        throw new UnsupportedOperationException("bw.co.roguesystems.zetaedrms.document.DocumentService.handleRemove(String id) Not implemented!");
+            throws Exception {
+
+        documentRepository.deleteById(id);
+
+        return true;
     }
 
     /**
@@ -83,32 +97,35 @@ public class DocumentServiceImpl
      */
     @Override
     protected Collection<DocumentDTO> handleGetAll()
-        throws Exception
-    {
-        // TODO implement protected  Collection<DocumentDTO> handleGetAll()
-        throw new UnsupportedOperationException("bw.co.roguesystems.zetaedrms.document.DocumentService.handleGetAll() Not implemented!");
+            throws Exception {
+
+        Collection<Document> docs = documentRepository.findAll();
+
+        return documentDao.toDocumentDTOCollection(docs);
     }
 
     /**
-     * @see bw.co.roguesystems.zetaedrms.document.DocumentService#search(String, Set<PropertySearchOrder>)
+     * @see bw.co.roguesystems.zetaedrms.document.DocumentService#search(String,
+     *      Set<PropertySearchOrder>)
      */
     @Override
     protected Collection<DocumentDTO> handleSearch(String criteria, Set<PropertySearchOrder> orderings)
-        throws Exception
-    {
-        // TODO implement protected  Collection<DocumentDTO> handleSearch(String criteria, Set<PropertySearchOrder> orderings)
-        throw new UnsupportedOperationException("bw.co.roguesystems.zetaedrms.document.DocumentService.handleSearch(String criteria, Set<PropertySearchOrder> orderings) Not implemented!");
+            throws Exception {
+        throw new UnsupportedOperationException(
+                "bw.co.roguesystems.zetaedrms.document.DocumentService.handleSearch(String criteria, Set<PropertySearchOrder> orderings) Not implemented!");
     }
 
     /**
-     * @see bw.co.roguesystems.zetaedrms.document.DocumentService#getAll(Integer, Integer)
+     * @see bw.co.roguesystems.zetaedrms.document.DocumentService#getAll(Integer,
+     *      Integer)
      */
     @Override
     protected Page<DocumentDTO> handleGetAll(Integer pageNumber, Integer pageSize)
-        throws Exception
-    {
-        // TODO implement protected  Page<DocumentDTO> handleGetAll(Integer pageNumber, Integer pageSize)
-        throw new UnsupportedOperationException("bw.co.roguesystems.zetaedrms.document.DocumentService.handleGetAll(Integer pageNumber, Integer pageSize) Not implemented!");
+            throws Exception {
+
+        Page<Document> docs = documentRepository.findAll(PageRequest.of(pageNumber, pageSize));
+
+        return docs.map(documentDao::toDocumentDTO);
     }
 
     /**
@@ -116,21 +133,84 @@ public class DocumentServiceImpl
      */
     @Override
     protected Page<DocumentDTO> handleSearch(SearchObject<String> criteria)
-        throws Exception
-    {
-        // TODO implement protected  Page<DocumentDTO> handleSearch(SearchObject<String> criteria)
-        throw new UnsupportedOperationException("bw.co.roguesystems.zetaedrms.document.DocumentService.handleSearch(SearchObject<String> criteria) Not implemented!");
+            throws Exception {
+        // TODO implement protected Page<DocumentDTO> handleSearch(SearchObject<String>
+        // criteria)
+        throw new UnsupportedOperationException(
+                "bw.co.roguesystems.zetaedrms.document.DocumentService.handleSearch(SearchObject<String> criteria) Not implemented!");
     }
 
     /**
      * @see bw.co.roguesystems.zetaedrms.document.DocumentService#upload(File)
      */
     @Override
-    protected Collection<DocumentDTO> handleUpload(Set<File> file)
-        throws Exception
-    {
-        // TODO implement protected  DocumentDTO handleUpload(File file)
-        throw new UnsupportedOperationException("bw.co.roguesystems.zetaedrms.document.DocumentService.handleUpload(File file) Not implemented!");
+    protected Collection<DocumentDTO> handleUpload(String baseDir, String owner, Set<MultipartFile> files)
+            throws Exception {
+
+        String id = null;
+        // try (InputStream fis = file.getInputStream()) {
+
+        // id = minioService.putObject(
+        // PutObjectArgs.builder()
+        // .bucket(bucketName)
+        // .object(fileName)
+        // .stream(inputStream, file.getSize(), -1)
+        // .contentType(file.getContentType())
+        // .build());
+
+        // System.out.println("DICOM file uploaded to MinIO: " + dicomFile.getName());
+        // }
+
+        // return null;
+
+        List<DocumentDTO> uploadedFiles = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            String fileName = baseDir + "/" + file.getOriginalFilename();
+            try (InputStream inputStream = file.getInputStream()) {
+                
+                id = minioService.uploadFile(fileName, inputStream, file.getSize(), file.getContentType());
+
+                System.out.println("=================================> " + file.getOriginalFilename());
+
+                Document doc = Document.Factory.newInstance();
+                doc.setFilePath(fileName);
+                doc.setCreatedBy(id); 
+                doc.setCreatedAt(LocalDateTime.now());
+                doc.setContentType(file.getContentType());
+                doc.setDocumentName(file.getOriginalFilename());
+                doc.setVersion("0.0.0");
+                doc.setDocumentId(file.getOriginalFilename());
+    
+                doc = documentRepository.save(doc);
+    
+                uploadedFiles.add(documentDao.toDocumentDTO(doc));
+
+            } catch(Exception e) {
+                e.printStackTrace();
+                throw new DocumentServiceException("Error uploading file: " + file.getOriginalFilename());
+            }
+        }
+
+        return uploadedFiles;
     }
 
+    /**
+     * @see bw.co.roguesystems.zetaedrms.document.DocumentService#upload(File)
+     */
+    @Override
+    protected Collection<DocumentDTO> handleGetFileList(String directory)
+            throws Exception {
+
+        Collection<Item> items = minioService.getFileList(directory);
+
+        List<DocumentDTO> docs = new ArrayList<>();
+
+        for (Item item : items) {
+
+            docs.add(documentDao.toDocumentDTO(documentRepository.findByFilePath(item.objectName())));
+        }
+
+        return docs;
+    }
 }

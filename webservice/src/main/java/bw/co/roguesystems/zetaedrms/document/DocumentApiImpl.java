@@ -6,6 +6,7 @@
 package bw.co.roguesystems.zetaedrms.document;
 
 import bw.co.roguesystems.zetaedrms.SearchObject;
+import bw.co.roguesystems.zetaedrms.keycloak.KeycloakService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.File;
 import java.util.Collection;
@@ -15,6 +16,9 @@ import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,12 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin()
 @Tag(name = "Access Point Type", description = "Configuring different resource types accessible.")
 public class DocumentApiImpl extends DocumentApiBase {
+
+    private final KeycloakService keycloakService;
     
-    public DocumentApiImpl(
-        DocumentService documentService    ) {
+    public DocumentApiImpl(DocumentService documentService, KeycloakService keycloakService) {
         
-        super(
-            documentService        );
+        super(documentService);
+        this.keycloakService = keycloakService;
     }
 
 
@@ -215,13 +220,35 @@ public class DocumentApiImpl extends DocumentApiBase {
     @Override
     public ResponseEntity<?> handleUploadOne(MultipartFile file) {
         try {
-            System.out.println("=====================================================");
-            System.out.println("Name: " + file.getName());
-            System.out.println("Path: " + file.getOriginalFilename());
-            // System.out.println("Absolute Path: " + file.getInputStream().);
-            // System.out.println("Canonical Path: " + file.getCanonicalPath());
-            System.out.println("=====================================================");
-            Optional<?> data = Optional.empty(); // TODO: Add custom code here;
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+
+            System.out.println(jwt.getClaims());
+
+            String username = jwt.getClaimAsString("preferred_username");
+            String userId = jwt.getClaimAsString("sub");
+            
+            Collection<DocumentDTO> docs = documentService.upload(userId, username, Set.of(file));
+            Optional<?> data = Optional.of(docs.iterator().next()); // TODO: Add custom code here;
+            ResponseEntity<?> response;
+
+            if(data.isPresent()) {
+                response = ResponseEntity.status(HttpStatus.OK).body(data.get());
+            } else {
+                response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return response;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> handleGetFileList(String parentPath) {
+        try {
+            Optional<?> data = Optional.of(this.documentService.getFileList(parentPath)); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
             if(data.isPresent()) {
