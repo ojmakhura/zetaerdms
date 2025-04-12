@@ -9,11 +9,14 @@ import bw.co.roguesystems.zetaedrms.SearchObject;
 import bw.co.roguesystems.zetaedrms.keycloak.KeycloakService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,13 +34,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class DocumentApiImpl extends DocumentApiBase {
 
     private final KeycloakService keycloakService;
-    
+
     public DocumentApiImpl(DocumentService documentService, KeycloakService keycloakService) {
-        
+
         super(documentService);
         this.keycloakService = keycloakService;
     }
-
 
     @Override
     public ResponseEntity<?> handleDownload(String filePath) {
@@ -45,7 +47,7 @@ public class DocumentApiImpl extends DocumentApiBase {
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -64,7 +66,7 @@ public class DocumentApiImpl extends DocumentApiBase {
             Optional<?> data = Optional.of(documentService.findById(id)); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -78,12 +80,38 @@ public class DocumentApiImpl extends DocumentApiBase {
     }
 
     @Override
+    public ResponseEntity<?> handleFindMyRoot() {
+
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+
+            System.out.println(jwt.getClaims());
+
+            String username = jwt.getClaimAsString("preferred_username");
+            String userId = jwt.getClaimAsString("sub");
+
+            DocumentDTO root = documentService.getUserRoot(userId);
+            Optional<?> data = Optional.of(root); // TODO: Add custom code here;
+            ResponseEntity<?> response;
+
+            response = ResponseEntity.status(HttpStatus.OK).body(data.get());
+
+            return response;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
+    @Override
     public ResponseEntity<?> handleGetAll() {
         try {
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -102,7 +130,7 @@ public class DocumentApiImpl extends DocumentApiBase {
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -121,7 +149,7 @@ public class DocumentApiImpl extends DocumentApiBase {
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -140,7 +168,7 @@ public class DocumentApiImpl extends DocumentApiBase {
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -156,10 +184,36 @@ public class DocumentApiImpl extends DocumentApiBase {
     @Override
     public ResponseEntity<?> handleSave(DocumentDTO document) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+
+            System.out.println(jwt.getClaims());
+
+            String username = jwt.getClaimAsString("preferred_username");
+            String userId = jwt.getClaimAsString("sub");
+
+            if (document.getParent() == null || StringUtils.isBlank(document.getParent().getId())) {
+                document.setParent(checkRootDir(userId, username));
+            }
+
+            if(!document.getFilePath().contains('/' + userId)) {
+                document.setFilePath('/' + userId + '/' + document.getFilePath());
+            }
+
+            if(StringUtils.isBlank(document.getId())) {
+
+                document.setCreatedAt(LocalDateTime.now());
+                document.setCreatedBy(username);
+            } else {
+
+                document.setModifiedAt(LocalDateTime.now());
+                document.setModifiedBy(username);
+            }
+
             Optional<?> data = Optional.of(documentService.save(document)); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -179,7 +233,7 @@ public class DocumentApiImpl extends DocumentApiBase {
             Optional<?> data = Optional.empty(); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
+            if (data.isPresent()) {
                 response = ResponseEntity.status(HttpStatus.OK).body(data.get());
             } else {
                 response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -193,22 +247,28 @@ public class DocumentApiImpl extends DocumentApiBase {
     }
 
     @Override
-    public ResponseEntity<?> handleUpload(Set<MultipartFile> files) {
+    public ResponseEntity<?> handleUpload(String parentPath, Set<MultipartFile> files) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+
+            String username = jwt.getClaimAsString("preferred_username");
+            String userId = jwt.getClaimAsString("sub");
             // System.out.println("=====================================================");
             // System.out.println("Name: " + file.getName());
             // System.out.println("Path: " + file.getPath());
             // System.out.println("Absolute Path: " + file.getAbsolutePath());
             // System.out.println("Canonical Path: " + file.getCanonicalPath());
             // System.out.println("=====================================================");
-            Optional<?> data = Optional.empty(); // TODO: Add custom code here;
+
+            if(!parentPath.contains('/' + userId)) {
+                parentPath = '/' + userId + '/' + parentPath;
+            }
+
+            Optional<?> data = Optional.of(documentService.upload(parentPath, username, files)); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
-                response = ResponseEntity.status(HttpStatus.OK).body(data.get());
-            } else {
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
             return response;
         } catch (Exception e) {
@@ -218,7 +278,7 @@ public class DocumentApiImpl extends DocumentApiBase {
     }
 
     @Override
-    public ResponseEntity<?> handleUploadOne(MultipartFile file) {
+    public ResponseEntity<?> handleUploadOne(String parentPath, MultipartFile file) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -227,16 +287,12 @@ public class DocumentApiImpl extends DocumentApiBase {
 
             String username = jwt.getClaimAsString("preferred_username");
             String userId = jwt.getClaimAsString("sub");
-            
+
             Collection<DocumentDTO> docs = documentService.upload(userId, username, Set.of(file));
             Optional<?> data = Optional.of(docs.iterator().next()); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
-                response = ResponseEntity.status(HttpStatus.OK).body(data.get());
-            } else {
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+            response = ResponseEntity.status(HttpStatus.OK).body(data.get());
 
             return response;
         } catch (Exception e) {
@@ -245,20 +301,60 @@ public class DocumentApiImpl extends DocumentApiBase {
         }
     }
 
+    private DocumentDTO checkRootDir(String userId, String username) {
+
+        String rootPath = String.format("/%s", userId);
+
+        DocumentDTO root = documentService.getUserRoot(userId);
+        if (root == null) {
+            root = new DocumentDTO();
+            root.setFilePath(rootPath);
+            root.setCreatedAt(LocalDateTime.now());
+            root.setCreatedBy(username);
+            root.setDir(true);
+            root.setVersion("1.0");
+            root.setContentType("DIR");
+            root.setDocumentId(UUID.randomUUID().toString());
+            root.setDocumentName(userId);
+
+            root = documentService.save(root);
+        }
+
+        return root;
+    }
+
     @Override
     public ResponseEntity<?> handleGetFileList(String parentPath) {
         try {
+
+            if (parentPath == null || parentPath.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Parent path cannot be null or empty");
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+
+            System.out.println(jwt.getClaims());
+
+            String username = jwt.getClaimAsString("preferred_username");
+            String userId = jwt.getClaimAsString("sub");
+
+            checkRootDir(userId, username);
+
+            if (parentPath.equals("/")) {
+                parentPath = "/" + userId;
+
+                return ResponseEntity.status(HttpStatus.OK).body(this.documentService.getFileList(parentPath));
+            }
+
             Optional<?> data = Optional.of(this.documentService.getFileList(parentPath)); // TODO: Add custom code here;
             ResponseEntity<?> response;
 
-            if(data.isPresent()) {
-                response = ResponseEntity.status(HttpStatus.OK).body(data.get());
-            } else {
-                response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+            response = ResponseEntity.status(HttpStatus.OK).body(data.get());
 
             return response;
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

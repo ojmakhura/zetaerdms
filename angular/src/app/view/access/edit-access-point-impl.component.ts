@@ -5,7 +5,6 @@ import { EditAccessPointVarsForm } from '@app/view/access/edit-access-point.comp
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { AppEnvStore } from '@app/store/app-env.state';
 import { AuthorisationApiStore } from '@app/store/bw/co/roguesystems/zetaedrms/authorisation/authorisation-api.store';
@@ -27,7 +26,6 @@ export enum EditAccessPointRestrictions {
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     LoaderComponent,
   ],
 })

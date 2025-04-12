@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { TableComponent } from '@app/components/table/table.component';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { DepartmentSearchImplComponent } from '@app/components/organisation/department/department-search-impl.component';
@@ -26,7 +25,6 @@ import { DepartmentEditorImplComponent } from '@app/components/organisation/depa
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     TableComponent,
     LoaderComponent,
     DepartmentSearchImplComponent,
@@ -40,7 +38,7 @@ export class EditDepartmentImplComponent extends EditDepartmentComponent {
         super();
     }
 
-    override beforeOnInit(form: EditDepartmentVarsForm): EditDepartmentVarsForm{     
+    override beforeOnInit(form: EditDepartmentVarsForm): EditDepartmentVarsForm{
         return form;
     }
 

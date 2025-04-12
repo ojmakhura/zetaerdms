@@ -5,27 +5,44 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
 import { SharedModule } from '@app/@shared/shared.module';
 import { DocumentApiStore } from '@app/store/bw/co/roguesystems/zetaedrms/document/document-api.store';
+import { DataService, ExplorerComponent, ExplorerService } from 'ngx-explorer';
+import { DocumentDataService } from '@app/service/bw/co/roguesystems/zetaedrms/document/document-data.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [CommonModule, TranslateModule, SharedModule, MaterialModule],
+  imports: [CommonModule, TranslateModule, SharedModule, MaterialModule, ExplorerComponent],
+  providers: [
+    {
+      provide: DataService,
+      useClass: DocumentDataService,
+    },
+  ],
 })
 export class HomeComponent implements OnInit {
   files: any[] = [];
   documentApiStore = inject(DocumentApiStore);
+  private explorerService = inject(ExplorerService);
 
-  constructor() {}
+  constructor() {
+    this.explorerService.openNode();
+
+    // subscribe to tree updates
+    this.explorerService.root$.subscribe((root) => {
+      console.log('Root:', root);
+    });
+  }
 
   ngOnInit() {}
 
   /**
    * on file drop handler
    */
-  onFileDropped($event: any) {
-    this.prepareFilesList($event);
+  onFileDropped(event: any) {
+    console.log(event);
+    this.prepareFilesList(event);
   }
 
   /**
@@ -97,5 +114,12 @@ export class HomeComponent implements OnInit {
     console.log(this.files);
     // this.documentApiStore.upload({files: this.files});
     // this.documentApiStore.uploadOne({file: this.files[0]});
+  }
+
+  onDragLeave($event: DragEvent) {
+    console.log($event);
+  }
+  onDragOver($event: DragEvent) {
+    console.log('onDragOver', $event);
   }
 }

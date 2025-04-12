@@ -5,14 +5,13 @@ import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } fro
 import { TranslateService } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '@env/environment';
 import { MaterialModule } from './material.module';
 import { ShellComponent } from './shell/shell.component';
 import { I18nService } from './i18n/i18n.service';
-import { Logger, UntilDestroy, untilDestroyed } from './@shared';
+import { Logger } from './@shared';
 import { AuthorisationApi } from './service/bw/co/roguesystems/zetaedrms/authorisation/authorisation-api';
 import { HttpClient } from '@angular/common/http';
 import { KeycloakService } from 'keycloak-angular';
@@ -21,7 +20,6 @@ import * as nav from './shell/navigation';
 
 const log = new Logger('App');
 
-@UntilDestroy()
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -62,7 +60,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.appStore.setAuthorisedPathsLoaded(false);
     this.loadingEnv = true;
     this.appStore.getEnv();
@@ -91,7 +88,6 @@ export class AppComponent implements OnInit, OnDestroy {
         }),
         filter((route) => route.outlet === 'primary'),
         switchMap((route) => route.data),
-        untilDestroyed(this),
       )
       .subscribe((event) => {
         const title = event['title'];
@@ -109,7 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.keycloakService.isLoggedIn()) {
       let realmUrl = `${env.authDomain}/admin/realms/${environment.keycloak.realm}`;
 
-      this.keycloakService.loadUserProfile().then((profile) => {
+      this.keycloakService.loadUserProfile().then((profile: any) => {
         this.appStore.setIsLoggedIn(this.keycloakService.isLoggedIn());
 
         if (!profile) return;
@@ -118,6 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
           `${env.authDomain}/realms/${environment.keycloak.realm}/account?referrer=' + ${encodeURIComponent(environment.keycloak.clientId)}&referrer_uri=' + ${encodeURIComponent(environment.keycloak.redirectUri)}`,
         );
         this.appStore.setUsername(this.keycloakService.getUsername());
+        this.appStore.setUserId(profile.id);
 
         this.http.get<any[]>(`${realmUrl}/clients`).subscribe((clients) => {
           let client = clients.filter((client) => client.clientId === environment.keycloak.clientId)[0];

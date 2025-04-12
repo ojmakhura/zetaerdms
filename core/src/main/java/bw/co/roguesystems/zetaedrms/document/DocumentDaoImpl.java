@@ -6,7 +6,10 @@
  */
 package bw.co.roguesystems.zetaedrms.document;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
 
 /**
  * @see Document
@@ -37,6 +40,39 @@ public class DocumentDaoImpl
         super.toDocumentDTO(source, target);
         // WARNING! No conversion for target.metadata (can't convert source.getMetadata():java.util.Map to java.util.Map<K, V>
         target.setMetadata(source.getMetadata());
+
+        if(source.getParent() != null) {
+            DocumentDTO dto = new DocumentDTO();
+
+            dto.setDir(source.getParent().getDir());
+            dto.setId(source.getParent().getId());
+            dto.setDocumentName(source.getParent().getDocumentName());
+            dto.setContentType(source.getParent().getContentType());
+            dto.setCreatedAt(source.getParent().getCreatedAt());
+            dto.setCreatedBy(source.getParent().getCreatedBy());
+            dto.setModifiedAt(source.getParent().getModifiedAt());
+            dto.setModifiedBy(source.getParent().getModifiedBy());
+            dto.setFilePath(source.getParent().getFilePath());
+
+            target.setParent(dto);
+        }
+
+        if(CollectionUtils.isNotEmpty(source.getDocuments())) {
+
+            target.setDirectories(new ArrayList<>());
+            target.setFiles(new ArrayList<>());
+
+            for (Document document : source.getDocuments()) {
+                DocumentDTO dto = new DocumentDTO();
+                this.toDocumentDTO(document, dto);
+
+                if(dto.getDir()) {
+                    target.getDirectories().add(dto);
+                } else {
+                    target.getFiles().add(dto);
+                }
+            }
+        }
     }
 
     /**
@@ -90,5 +126,16 @@ public class DocumentDaoImpl
         super.documentDTOToEntity(source, target, copyIfNull);
         // No conversion for target.metadata (can't convert source.getMetadata():java.util.Map<K, V> to java.util.Map
         target.setMetadata(source.getMetadata());
+
+        if(source.getDir()) {
+
+            target.setDir(source.getDir());
+            target.setContentType("DIR");
+        }
+
+        if(source.getParent() != null) {
+            Document parent = this.loadDocumentFromDocumentDTO(source.getParent());
+            target.setParent(parent);
+        }
     }
 }

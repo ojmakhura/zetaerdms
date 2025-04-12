@@ -7,68 +7,65 @@ import { Page } from '@app/model/page.model';
 import { SearchObject } from '@app/model/search-object';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentApi {
+  protected path = '/document';
 
-    protected path = '/document';
+  private http = inject(HttpClient);
 
-    private http = inject(HttpClient);
+  public download(filePath: string | any): Observable<File | any> {
+    return this.http.get<File | any>(this.path + `/download/{filePath}`);
+  }
 
-    public download(filePath: string | any ): Observable<File | any> {
+  public findById(id: string | any): Observable<DocumentDTO | any> {
+    return this.http.get<DocumentDTO | any>(this.path + `/id/${id}`);
+  }
 
-        return this.http.get<File | any>(this.path + `/download/{filePath}/filePath/${filePath}`);
-    }
+  public getFileList(parentPath: string | any): Observable<DocumentDTO[]> {
+    return this.http.get<DocumentDTO[]>(this.path + `/list?parentPath=${parentPath ? parentPath : '/'}`);
+  }
 
-    public findById(id: string | any ): Observable<DocumentDTO | any> {
+  public getAll(): Observable<DocumentDTO[] | any[]> {
+    return this.http.get<DocumentDTO[] | any[]>(this.path + `/all`);
+  }
 
-        return this.http.get<DocumentDTO | any>(this.path + `/id/${id}`);
-    }
+  public getAllPaged(pageNumber: number | any, pageSize: number | any): Observable<Page<DocumentDTO>> {
+    return this.http.get<Page<DocumentDTO>>(this.path + `/all/paged?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  }
 
-    public getAll(): Observable<DocumentDTO[] | any[]> {
+  public pagedSearch(criteria: SearchObject<string> | any): Observable<Page<DocumentDTO>> {
+    return this.http.post<Page<DocumentDTO>>(this.path + `/search/paged`, criteria);
+  }
 
-        return this.http.get<DocumentDTO[] | any[]>(this.path + `/all`);
-    }
+  public remove(id: string | any): Observable<boolean | any> {
+    return this.http.delete<boolean | any>(this.path + `/id/${id}`);
+  }
 
-    public getAllPaged(pageNumber: number | any , pageSize: number | any ): Observable<Page<DocumentDTO>> {
+  public save(accessPointType: DocumentDTO | any): Observable<DocumentDTO | any> {
+    return this.http.post<DocumentDTO | any>(this.path, accessPointType);
+  }
 
-        return this.http.get<Page<DocumentDTO>>(this.path + `/all/paged?pageNumber=${pageNumber}&pageSize=${pageSize}`);
-    }
+  public search(criteria: string | any): Observable<DocumentDTO[] | any[]> {
+    return this.http.get<DocumentDTO[] | any[]>(this.path + `/search?criteria=${criteria}`);
+  }
 
-    public pagedSearch(criteria: SearchObject<string> | any ): Observable<Page<DocumentDTO>> {
+  public upload(files: File[]): Observable<DocumentDTO[]> {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+    console.log(formData);
 
-        return this.http.post<Page<DocumentDTO>>(this.path + `/search/paged`, criteria);
-    }
+    return this.http.post<DocumentDTO[]>(this.path + `/upload`, formData);
+  }
 
-    public remove(id: string | any ): Observable<boolean | any> {
+  public uploadOne(file: File): Observable<DocumentDTO> {
+    const formData = new FormData();
+    formData.append('file', file);
 
-        return this.http.delete<boolean | any>(this.path + `/id/${id}`);
-    }
+    return this.http.post<DocumentDTO>(this.path + `/upload/one`, formData);
+  }
 
-    public save(accessPointType: DocumentDTO | any ): Observable<DocumentDTO | any> {
-
-        return this.http.post<DocumentDTO | any>(this.path, accessPointType);
-    }
-
-    public search(criteria: string | any ): Observable<DocumentDTO[] | any[]> {
-
-        return this.http.get<DocumentDTO[] | any[]>(this.path + `/search?criteria=${criteria}`);
-    }
-
-    public upload(files: File[] ): Observable<DocumentDTO[]> {
-
-      const formData = new FormData();
-      files.forEach(file => formData.append('files', file));
-      console.log(formData);
-
-      return this.http.post<DocumentDTO[]>(this.path + `/upload`, formData);
-    }
-
-    public uploadOne(file: File): Observable<DocumentDTO> {
-
-      const formData = new FormData();
-      formData.append('file', file)
-
-      return this.http.post<DocumentDTO>(this.path + `/upload/one`, formData);
-    }
+  public findMyRoot(): Observable<DocumentDTO | any> {
+    return this.http.get<DocumentDTO | any>(`${this.path}/root`);
+  }
 }

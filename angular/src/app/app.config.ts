@@ -14,7 +14,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { apiPrefixInterceptor } from './@core/http/api-prefix.interceptor';
 import { errorHandlerInterceptor } from './@core/http/error-handler.interceptor';
 import { KeycloakBearerInterceptor, KeycloakService } from 'keycloak-angular';
-
+import { DataService } from 'ngx-explorer';
+import { DocumentDataService } from './service/bw/co/roguesystems/zetaedrms/document/document-data.service';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -86,6 +87,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: RouteReuseStrategy,
       useClass: RouteReusableStrategy,
+    },
+    {
+      provide: DataService,
+      useClass: DocumentDataService,
     },
   ],
 };

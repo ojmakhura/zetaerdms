@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { TableComponent } from '@app/components/table/table.component';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { OrganisationDetailsImplComponent } from '@app/components/organisation/organisation-details-impl.component';
@@ -25,7 +24,6 @@ import { OrganisationEditorImplComponent } from '@app/components/organisation/or
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     TableComponent,
     LoaderComponent,
     OrganisationDetailsImplComponent,
@@ -38,7 +36,7 @@ export class EditOrganisationImplComponent extends EditOrganisationComponent {
         super();
     }
 
-    override beforeOnInit(form: EditOrganisationVarsForm): EditOrganisationVarsForm{     
+    override beforeOnInit(form: EditOrganisationVarsForm): EditOrganisationVarsForm{
         return form;
     }
 

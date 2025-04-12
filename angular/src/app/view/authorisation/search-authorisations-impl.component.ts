@@ -6,7 +6,6 @@ import { SearchAuthorisationsVarsForm } from '@app/view/authorisation/search-aut
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { TableComponent } from '@app/components/table/table.component';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { AuthorisationSearchImplComponent } from '@app/components/authorisation/authorisation-search-impl.component';
@@ -33,7 +32,6 @@ export enum SearchAuthorisationsRestrictions {
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     TableComponent,
     LoaderComponent,
     AuthorisationSearchImplComponent,

@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,8 +77,15 @@ public class DocumentServiceImpl
     protected DocumentDTO handleSave(DocumentDTO document)
             throws Exception {
 
-        Document doc = documentDao.documentDTOToEntity(document);
+        if(StringUtils.isBlank(document.getId())) {
+            document.setDocumentId(UUID.randomUUID().toString());
+        }
 
+        if(StringUtils.isBlank(document.version)) {
+            document.setVersion("0.1");
+        }
+
+        Document doc = documentDao.documentDTOToEntity(document);
         doc = documentRepository.save(doc);
 
         return documentDao.toDocumentDTO(doc);
@@ -163,28 +174,28 @@ public class DocumentServiceImpl
 
         // return null;
 
-        List<DocumentDTO> uploadedFiles = new ArrayList<>();
+        List<Document> docs = new ArrayList<>();
+
+        Document parent = documentRepository.findByFilePath(baseDir);
 
         for (MultipartFile file : files) {
             String fileName = baseDir + "/" + file.getOriginalFilename();
             try (InputStream inputStream = file.getInputStream()) {
                 
                 id = minioService.uploadFile(fileName, inputStream, file.getSize(), file.getContentType());
-
-                System.out.println("=================================> " + file.getOriginalFilename());
+                System.out.println("File uploaded to MinIO: " + id);
 
                 Document doc = Document.Factory.newInstance();
                 doc.setFilePath(fileName);
-                doc.setCreatedBy(id); 
+                doc.setCreatedBy(owner);
                 doc.setCreatedAt(LocalDateTime.now());
                 doc.setContentType(file.getContentType());
                 doc.setDocumentName(file.getOriginalFilename());
-                doc.setVersion("0.0.0");
-                doc.setDocumentId(file.getOriginalFilename());
-    
-                doc = documentRepository.save(doc);
-    
-                uploadedFiles.add(documentDao.toDocumentDTO(doc));
+                doc.setVersion("0.0.1");
+                doc.setDocumentId(UUID.randomUUID().toString());
+                doc.setParent(parent);
+
+//                docs.add(doc);
 
             } catch(Exception e) {
                 e.printStackTrace();
@@ -192,7 +203,9 @@ public class DocumentServiceImpl
             }
         }
 
-        return uploadedFiles;
+        docs = documentRepository.saveAll(docs);
+
+        return documentDao.toDocumentDTOCollection(docs);
     }
 
     /**
@@ -202,15 +215,31 @@ public class DocumentServiceImpl
     protected Collection<DocumentDTO> handleGetFileList(String directory)
             throws Exception {
 
-        Collection<Item> items = minioService.getFileList(directory);
-
+        Document doc = documentRepository.findByFilePath(directory);
         List<DocumentDTO> docs = new ArrayList<>();
 
-        for (Item item : items) {
+        if(CollectionUtils.isNotEmpty(doc.getDocuments())) {
 
-            docs.add(documentDao.toDocumentDTO(documentRepository.findByFilePath(item.objectName())));
+            for (Document document : doc.getDocuments()) {
+                DocumentDTO dto = new DocumentDTO();
+                this.documentDao.toDocumentDTO(document, dto);
+                docs.add(dto);
+            }
+        }
+        
+        return docs;
+    }
+
+    @Override
+    protected DocumentDTO handleGetUserRoot(String userId) throws Exception {
+
+        Document doc = documentRepository.findByFilePath("/" + userId);
+        if(doc != null) {
+            DocumentDTO dto = new DocumentDTO();
+            this.documentDao.toDocumentDTO(doc, dto);
+            return dto;
         }
 
-        return docs;
+        return null;
     }
 }

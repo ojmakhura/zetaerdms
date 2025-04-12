@@ -61,7 +61,7 @@ run_api_local:
 	. ./.env && mvn -pl webservice/ -am spring-boot:run
 
 local_web_deps: build_web
-	cd angular/target/zetaedrms && npm i && npm install file-saver --save && npm install @types/file-saver --save-dev
+	cd angular/target/zetaedrms && npm i
 
 run_web_local: build_web
 	cd angular/target/zetaedrms && npm start

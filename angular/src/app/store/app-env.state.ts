@@ -16,6 +16,7 @@ export type AppEnvState = {
   isLoggedIn: boolean;
   accountUri: string | null;
   username: string | null;
+  userId: string | null;
 };
 
 const initialState: AppEnvState = {
@@ -30,6 +31,7 @@ const initialState: AppEnvState = {
   isLoggedIn: false,
   accountUri: null,
   username: null,
+  userId: null,
 };
 
 export const AppEnvStore = signalStore(
@@ -87,6 +89,12 @@ export const AppEnvStore = signalStore(
         switchMap((username) => {
           patchState(store, { username });
           return of(store.username);
+        }),
+      ),
+      setUserId: rxMethod<string | null>(
+        switchMap((userId) => {
+          patchState(store, { userId });
+          return of(store.userId);
         }),
       ),
       setLoadingMenus: rxMethod<boolean>(

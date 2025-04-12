@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { TableComponent } from '@app/components/table/table.component';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { UserEditorImplComponent } from '@app/components/user/user-editor-impl.component';
@@ -25,7 +24,6 @@ import { ChangePasswordImplComponent } from '@app/view/user/change-password-impl
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     TableComponent,
     LoaderComponent,
     UserEditorImplComponent,
@@ -38,7 +36,7 @@ export class EditUserImplComponent extends EditUserComponent {
         super();
     }
 
-    override beforeOnInit(form: EditUserVarsForm): EditUserVarsForm{     
+    override beforeOnInit(form: EditUserVarsForm): EditUserVarsForm{
         return form;
     }
 

@@ -5,7 +5,6 @@ import { EditAuthorisationVarsForm } from '@app/view/authorisation/edit-authoris
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { AuthorisationEditorImplComponent } from '@app/components/authorisation/authorisation-editor-impl.component';
 import { AppEnvStore } from '@app/store/app-env.state';
@@ -28,7 +27,6 @@ export enum EditAuthorisationRestrictions {
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     LoaderComponent,
     AuthorisationEditorImplComponent,
   ],

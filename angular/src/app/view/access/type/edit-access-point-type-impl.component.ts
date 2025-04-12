@@ -7,7 +7,6 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '@app/material.module';
-import { CsvModule } from '@ctrl/ngx-csv';
 import { TableComponent } from '@app/components/table/table.component';
 import { LoaderComponent } from "@shared/loader/loader.component";
 import { AppEnvStore } from '@app/store/app-env.state';
@@ -30,7 +29,6 @@ export enum EditAccessPointTypeRestrictions {
     ReactiveFormsModule,
     TranslateModule,
     MaterialModule,
-    CsvModule,
     LoaderComponent,
   ],
 })
