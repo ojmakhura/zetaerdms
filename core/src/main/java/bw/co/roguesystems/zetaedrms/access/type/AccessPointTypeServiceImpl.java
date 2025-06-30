@@ -54,7 +54,7 @@ public class AccessPointTypeServiceImpl
     @Override
     protected AccessPointTypeDTO handleFindById(String id)
             throws Exception {
-        AccessPointType type = getAccessPointTypeDao().load(id);
+        AccessPointType type = accessPointTypeRepository.getReferenceById(id);
         return getAccessPointTypeDao().toAccessPointTypeDTO(type);
 
     }
@@ -82,13 +82,7 @@ public class AccessPointTypeServiceImpl
     protected boolean handleRemove(String id)
             throws Exception {
 
-        // Collection<AccessPointListDTO> points = this.accessPointRepository.search(null, null, id, null);
-
-        // if(CollectionUtils.isNotEmpty(points)) {
-        //     throw new AccessPointTypeServiceException("Access Point Type is in use and cannot be deleted");
-        // }
-
-        accessPointTypeDao.remove(id);
+        accessPointTypeRepository.deleteById(id);
 
         return true;
     }
@@ -99,8 +93,10 @@ public class AccessPointTypeServiceImpl
     @Override
     protected Collection<AccessPointTypeDTO> handleGetAll()
             throws Exception {
-        return (Collection<AccessPointTypeDTO>) getAccessPointTypeDao()
-                .loadAll(AccessPointTypeDao.TRANSFORM_ACCESSPOINTTYPEDTO);
+
+        Collection<AccessPointType> types = accessPointTypeRepository.findAll();
+        
+        return getAccessPointTypeDao().toAccessPointTypeDTOCollection(types);
     }
 
     /**

@@ -78,7 +78,7 @@ public class DepartmentDaoImpl
         }
         else
         {
-            return this.load(departmentDTO.getId());
+            return this.departmentRepository.getReferenceById(departmentDTO.getId());
         }
     }
 
@@ -148,7 +148,7 @@ public class DepartmentDaoImpl
         }
         else
         {
-            return this.load(departmentListDTO.getId());
+            return this.departmentRepository.getReferenceById(departmentListDTO.getId());
         }
     }
 

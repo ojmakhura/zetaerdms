@@ -81,7 +81,7 @@ public class AccessPointDaoImpl
         }
         else
         {
-            return this.load(accessPointDTO.getId());
+            return this.accessPointRepository.getReferenceById(accessPointDTO.getId());
         }
     }
 
@@ -154,7 +154,7 @@ public class AccessPointDaoImpl
         }
         else
         {
-            return this.load(accessPointListDTO.getId());
+            return this.accessPointRepository.getReferenceById(accessPointListDTO.getId());
         }
     }
 

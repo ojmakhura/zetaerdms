@@ -177,9 +177,16 @@ public class DocumentServiceImpl
         List<Document> docs = new ArrayList<>();
 
         Document parent = documentRepository.findByFilePath(baseDir);
+        StringBuilder pathBuilder = new StringBuilder();
+        pathBuilder.append(baseDir);
+
+        if(!baseDir.endsWith("/")) {
+            pathBuilder.append("/");
+        }
 
         for (MultipartFile file : files) {
-            String fileName = baseDir + "/" + file.getOriginalFilename();
+            String fileName = pathBuilder.toString() +
+                    file.getOriginalFilename();
             try (InputStream inputStream = file.getInputStream()) {
                 
                 id = minioService.uploadFile(fileName, inputStream, file.getSize(), file.getContentType());
@@ -194,8 +201,9 @@ public class DocumentServiceImpl
                 doc.setVersion("0.0.1");
                 doc.setDocumentId(UUID.randomUUID().toString());
                 doc.setParent(parent);
+                doc.setDir(false);
 
-//                docs.add(doc);
+                docs.add(doc);
 
             } catch(Exception e) {
                 e.printStackTrace();

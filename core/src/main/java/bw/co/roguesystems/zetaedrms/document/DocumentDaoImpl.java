@@ -98,7 +98,7 @@ public class DocumentDaoImpl
         }
         else
         {
-            return this.load(documentDTO.getId());
+            return this.documentRepository.getReferenceById(documentDTO.getId());
         }
     }
 

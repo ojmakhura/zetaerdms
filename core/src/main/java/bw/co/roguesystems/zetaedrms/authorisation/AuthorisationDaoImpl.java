@@ -81,7 +81,7 @@ public class AuthorisationDaoImpl
         }
         else
         {
-            return this.load(authorisationDTO.getId());
+            return this.authorisationRepository.getReferenceById(authorisationDTO.getId());
         }
     }
 
@@ -169,7 +169,7 @@ public class AuthorisationDaoImpl
         }
         else
         {
-            return this.load(authorisationListDTO.getId());
+            return this.authorisationRepository.getReferenceById(authorisationListDTO.getId());
         }
     }
 

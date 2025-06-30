@@ -7,8 +7,14 @@
  */
 import { Routes } from '@angular/router';
 import { Shell } from '@app/shell/shell.service';
+// import { LoginComponent } from './auth/login.component';
 
 export const routes: Routes = [
+  // Uncomment the following lines to enable login route
+  //{
+  //  path: 'login',
+  //  component: LoginComponent,
+  //},
   Shell.childRoutes([
     {
       path: '',
@@ -21,36 +27,36 @@ export const routes: Routes = [
       loadChildren: () => import('./about/about.routes').then((m) => m.routes),
     },
     {
-      path: 'user',
+      path: 'user', 
       loadChildren: () => import('@app/view/user/user.routes').then((m) => m.routes),
     },
     {
-      path: 'authorisation',
+      path: 'authorisation', 
       loadChildren: () => import('@app/view/authorisation/authorisation.routes').then((m) => m.routes),
     },
     {
-      path: 'access',
+      path: 'access', 
       loadChildren: () => import('@app/view/access/access-point.routes').then((m) => m.routes),
     },
     {
-      path: 'access/type',
+      path: 'access/type', 
       loadChildren: () => import('@app/view/access/type/access-point-type.routes').then((m) => m.routes),
     },
     {
-      path: 'document/metadata',
+      path: 'document/metadata', 
       loadChildren: () => import('@app/view/document/metadata/metadata.routes').then((m) => m.routes),
     },
     {
-      path: 'organisation',
+      path: 'organisation', 
       loadChildren: () => import('@app/view/organisation/organisation.routes').then((m) => m.routes),
     },
     {
-      path: 'organisation/department',
+      path: 'organisation/department', 
       loadChildren: () => import('@app/view/organisation/department/department.routes').then((m) => m.routes),
     },
   ]),
   // Fallback when no prior route is matched
-  {
-    path: '**', redirectTo: '', pathMatch: 'full'
+  { 
+    path: '**', redirectTo: '', pathMatch: 'full' 
   },
 ];

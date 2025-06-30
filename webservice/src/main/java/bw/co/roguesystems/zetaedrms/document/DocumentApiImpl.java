@@ -254,15 +254,14 @@ public class DocumentApiImpl extends DocumentApiBase {
 
             String username = jwt.getClaimAsString("preferred_username");
             String userId = jwt.getClaimAsString("sub");
-            // System.out.println("=====================================================");
-            // System.out.println("Name: " + file.getName());
-            // System.out.println("Path: " + file.getPath());
-            // System.out.println("Absolute Path: " + file.getAbsolutePath());
-            // System.out.println("Canonical Path: " + file.getCanonicalPath());
-            // System.out.println("=====================================================");
 
             if(!parentPath.contains('/' + userId)) {
-                parentPath = '/' + userId + '/' + parentPath;
+                if(parentPath.equals("/")) {
+                    parentPath = '/' + userId;
+                } else {
+                    parentPath = '/' + userId + parentPath;
+                }
+
             }
 
             Optional<?> data = Optional.of(documentService.upload(parentPath, username, files)); // TODO: Add custom code here;

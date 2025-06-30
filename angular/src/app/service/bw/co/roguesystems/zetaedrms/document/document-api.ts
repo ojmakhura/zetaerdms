@@ -50,17 +50,19 @@ export class DocumentApi {
     return this.http.get<DocumentDTO[] | any[]>(this.path + `/search?criteria=${criteria}`);
   }
 
-  public upload(files: File[]): Observable<DocumentDTO[]> {
+  public upload(parentPath: string, files: File[]): Observable<DocumentDTO[]> {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
+    formData.append('parentPath', parentPath ? parentPath : '/');
     console.log(formData);
 
     return this.http.post<DocumentDTO[]>(this.path + `/upload`, formData);
   }
 
-  public uploadOne(file: File): Observable<DocumentDTO> {
+  public uploadOne(parentPath: string, file: File): Observable<DocumentDTO> {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('parentPath', parentPath ? parentPath : '/');
 
     return this.http.post<DocumentDTO>(this.path + `/upload/one`, formData);
   }

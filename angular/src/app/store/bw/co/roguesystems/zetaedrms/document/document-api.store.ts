@@ -12,7 +12,7 @@ import { DocumentApi } from '@app/service/bw/co/roguesystems/zetaedrms/document/
 export type DocumentApiState = AppState<DocumentDTO, DocumentDTO> & {
   uploaded: DocumentDTO[];
   children: DocumentDTO[];
-  root: DocumentDTO
+  root: DocumentDTO;
 };
 
 const initialState: DocumentApiState = {
@@ -27,7 +27,7 @@ const initialState: DocumentApiState = {
   loaderMessage: '',
   uploaded: [],
   children: [],
-  root: new DocumentDTO()
+  root: new DocumentDTO(),
 };
 
 export const DocumentApiStore = signalStore(
@@ -45,16 +45,13 @@ export const DocumentApiStore = signalStore(
           return documentApi.download(data.filePath).pipe(
             tapResponse({
               next: (data: File | any) => {
-                patchState(
-                  store,
-                  {
-                    // data,
-                    loading: false,
-                    error: false,
-                    success: true,
-                    messages: []
-                  }
-                );
+                patchState(store, {
+                  // data,
+                  loading: false,
+                  error: false,
+                  success: true,
+                  messages: [],
+                });
               },
               error: (error: any) => {
                 patchState(store, {
@@ -249,10 +246,10 @@ export const DocumentApiStore = signalStore(
           );
         }),
       ),
-      upload: rxMethod<{ files: File[] }>(
+      upload: rxMethod<{ parentPath: string, files: File[] }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.upload(data.files).pipe(
+          return documentApi.upload(data.parentPath, data.files).pipe(
             tapResponse({
               next: (uploaded: DocumentDTO[]) => {
                 patchState(store, {
@@ -275,10 +272,10 @@ export const DocumentApiStore = signalStore(
           );
         }),
       ),
-      uploadOne: rxMethod<{ file: File }>(
+      uploadOne: rxMethod<{ parentPath: string, file: File }>(
         switchMap((data: any) => {
           patchState(store, { loading: true, loaderMessage: 'Loading ...' });
-          return documentApi.uploadOne(data.file).pipe(
+          return documentApi.uploadOne(data.parentPath, data.file).pipe(
             tapResponse({
               next: (data: DocumentDTO) => {
                 patchState(store, {

@@ -10,7 +10,6 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class DocumentDataService implements IDataService<DocumentDTO> {
-
   keycloakService = inject(KeycloakService);
   documentApi = inject(DocumentApi);
 
@@ -19,32 +18,29 @@ export class DocumentDataService implements IDataService<DocumentDTO> {
   getContent(target: DocumentDTO): Observable<{ files: DocumentDTO[]; dirs: DocumentDTO[] }> {
     console.log('getContent', target);
 
-    return this.documentApi.getFileList(target?.filePath ? target.filePath : '/')
-      .pipe(
-        map((response => {
-          console.log(response);
-          const files = response.filter((item) => !item.dir);
-          const dirs = response.filter((item) => item.dir);
+    return this.documentApi.getFileList(target?.filePath ? target.filePath : '/').pipe(
+      map((response) => {
+        console.log(response);
+        const files = response.filter((item) => !item.dir);
+        const dirs = response.filter((item) => item.dir);
 
-          return { files, dirs };
-        }))
-      );
+        return { files, dirs };
+      }),
+    );
   }
 
-
-  getName(document: DocumentDTO): string {
+  getName(document: DocumentDTO): string | undefined {
     return document.documentName;
   }
 
   createDir(parent: DocumentDTO, name: string): Observable<DocumentDTO> {
-
     const newDocument = new DocumentDTO();
     newDocument.documentName = name;
     newDocument.filePath = `${parent?.filePath ? parent?.filePath + '/' : ''}${name}`;
     newDocument.dir = true;
-    newDocument.contentType = "application/directory";
+    newDocument.contentType = 'application/directory';
 
-    if(parent?.id) {
+    if (parent?.id) {
       newDocument.parent = parent;
     }
 
@@ -60,21 +56,19 @@ export class DocumentDataService implements IDataService<DocumentDTO> {
   }
 
   openTree(data: DocumentDTO): Observable<Array<DataNode<DocumentDTO>>> {
-
     console.log('openTree', data);
 
-    return this.documentApi.getFileList(data.filePath)
-      .pipe(
-        map((response) => {
-          const nodes: Array<DataNode<DocumentDTO>> = response.map((item) => ({
-            data: item,
-            isLeaf: item.dir,
-            children: [],
-          }));
+    return this.documentApi.getFileList(data.filePath).pipe(
+      map((response) => {
+        const nodes: Array<DataNode<DocumentDTO>> = response.map((item) => ({
+          data: item,
+          isLeaf: item.dir,
+          children: [],
+        } as DataNode<DocumentDTO>));
 
-          return nodes;
-        })
-      );
+        return nodes;
+      }),
+    );
   }
 
   rename(target: DocumentDTO, newName: string): Observable<DocumentDTO> {
@@ -84,6 +78,30 @@ export class DocumentDataService implements IDataService<DocumentDTO> {
   uploadFiles(parent: DocumentDTO, files: FileList): Observable<DocumentDTO> {
     console.log('uploadFiles', parent, files);
     console.log(files.length, files.item(0));
-    throw new Error('Method not implemented.');
+
+    let uploaded: File[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+
+      const file = files.item(i);
+      console.log(file);
+
+      if(file == null) {
+        continue;
+      }
+
+      uploaded.push(file);
+    }
+
+    this.documentApi.upload(parent?.filePath ? parent.filePath : '/', uploaded).subscribe({
+      next: (response) => {
+        console.log('upload response', response);
+      },
+      error: (error) => {
+        console.error('Upload error:', error);
+      },
+    })
+
+    return of(parent);
   }
 }

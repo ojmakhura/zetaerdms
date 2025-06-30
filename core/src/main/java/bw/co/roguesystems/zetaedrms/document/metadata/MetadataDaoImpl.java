@@ -83,7 +83,7 @@ public class MetadataDaoImpl
         }
         else
         {
-            return this.load(metadataDTO.getId());
+            return this.metadataRepository.getReferenceById(metadataDTO.getId());
         }
     }
 

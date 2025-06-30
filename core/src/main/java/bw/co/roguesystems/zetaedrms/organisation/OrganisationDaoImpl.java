@@ -66,7 +66,7 @@ public class OrganisationDaoImpl
         }
         else
         {
-            return this.load(organisationDTO.getId());
+            return this.organisationRepository.getReferenceById(organisationDTO.getId());
         }
     }
 
@@ -128,7 +128,7 @@ public class OrganisationDaoImpl
         }
         else
         {
-            return this.load(organisationListDTO.getId());
+            return this.organisationRepository.getReferenceById(organisationListDTO.getId());
         }
     }
 

@@ -49,6 +49,8 @@
     "keycloak-js": "^26.1.4",
     "ngx-explorer": "^5.0.2",
     "ngx-mat-select-search": "^8.0.0",
+    "ngx-spinner": "^19.0.0",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
